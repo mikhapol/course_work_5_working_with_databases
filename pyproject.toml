@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "course-work-5-working-with-databases"
+version = "0.1.0"
+description = ""
+authors = ["Mikhail Polyakov PyCharm <mikhapol@bk.ru>"]
+readme = "README.md"
+packages = [{include = "course_work_5_working_with_databases"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+psycopg2 = "^2.9.6"
+requests = "^2.31.0"
+certifi = "^2023.5.7"
+charset-normalizer = "^3.1.0"
+idna = "^3.4"
+urllib3 = "^2.0.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
