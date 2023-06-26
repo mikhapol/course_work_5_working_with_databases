@@ -19,16 +19,18 @@ def main():
 
     dbmanager = DBManager(database_name, params)
 
-    print('Привет, что будем выводить?')
-    print("""
-1 - Список employer и количество vacancies.
-2 - Список vacancies с указанием названия employer, vacancies, salary и URL на вакансию.
-3 - Средняя ЗП
-4 - Список vacancies, у которых salary выше средней.
-5 - Найти вакансии по ключевому слову.
-    """)
+    print('Приветствую, выберите действие.')
+
     while True:
-        user_answer = input('Введи число: ')
+
+        print("""
+        1 - Список employer и количество vacancies.
+        2 - Список vacancies с указанием названия employer, vacancies, salary и URL на вакансию.
+        3 - Средняя ЗП
+        4 - Список vacancies, у которых salary выше средней.
+        5 - Найти вакансии по ключевому слову.
+            """)
+        user_answer = input('Ваш выбор: ')
 
         if user_answer == '1':
             emp_info = dbmanager.get_companies_and_vacancies_count()
@@ -56,10 +58,10 @@ def main():
         else:
             print("Такого варианта нет")
 
-        print("Продолжить работу?")
-        answer = input("Y/N")
+        print("Продолжить?")
+        answer = input("Y/N: ").upper()
         if answer == 'N':
-            print("Пока")
+            print("!!Пока!!")
             break
 
 

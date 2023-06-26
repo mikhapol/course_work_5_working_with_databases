@@ -39,7 +39,7 @@ class DBManager:
             with conn.cursor() as cur:
                 cur.execute(
                     """
-                    SELECT employer_name, vacancy_name, (salary_from + salary_to) / 2 AS avg_salary, url 
+                    SELECT employer_name, vacancy_name, (salary_from + salary_to) / 2 AS avg_salary, vacancy_url 
                     FROM vacancies
                     ORDER BY avg_salary DESC
                     """
@@ -50,7 +50,7 @@ class DBManager:
 
     def get_avg_salary(self) -> int:
         """
-        Получает список всех вакансий с указанием названия компании, названия вакансии и зарплаты и ссылки на вакансию
+        Получает среднюю зарплату по вакансиям.
         """
         conn = psycopg2.connect(database=self.database_name, **self.params)
 
@@ -58,7 +58,7 @@ class DBManager:
             with conn.cursor() as cur:
                 cur.execute(
                     """
-                    SELECT AVG((salary_from + salary_to) / 2) 
+                    SELECT  AVG((salary_from + salary_to) / 2) 
                     FROM vacancies
                     """
                 )
@@ -76,7 +76,7 @@ class DBManager:
             with conn.cursor() as cur:
                 cur.execute(
                     f"""
-                    SELECT vacancy_name, (salary_from + salary_to) / 2 AS salary, url  
+                    SELECT vacancy_name, (salary_from + salary_to) / 2 AS salary, vacancy_url  
                     FROM vacancies
                     WHERE (salary_from + salary_to) / 2 > {self.get_avg_salary()}
                     ORDER BY salary DESC
@@ -96,7 +96,7 @@ class DBManager:
             with conn.cursor() as cur:
                 cur.execute(
                     f"""
-                    SELECT vacancy_name, (salary_from + salary_to) / 2 AS salary, url  
+                    SELECT vacancy_name, (salary_from + salary_to) / 2 AS salary, vacancy_url  
                     FROM vacancies
                     WHERE vacancy_name LIKE '%{keyword}%'
                     """
