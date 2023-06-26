@@ -3,7 +3,7 @@ import requests
 
 
 def get_request(keyword, page=0):
-    response = requests.get("https://api.hh.ru/vacancies", params={"text": keyword, "page": page, "per_page": 1})
+    response = requests.get("https://api.hh.ru/vacancies", params={"text": keyword, "page": page, "per_page": 10})
     return response.json()['items']
 
 
@@ -20,14 +20,20 @@ def get_salary(vac):
 def parsing_vacancies(api_response):
     vacancies = []
     for vac in api_response:
+        # print('~~~~~~~~')
+        # print(vac)
+        # print('~~~~~~~~')
         salary_from, salary_to = get_salary(vac)
-        vacancy = {'vacancy_id': vac['id'],
-                   'vacancy_name': vac['name'],
-                   'employer_id': vac['employer']['id'],
-                   'salary_from': salary_from,
-                   'salary_to': salary_to,
-                   'city': vac['area']['name'],
-                   'url': vac['alternate_url']
+        vacancy = {
+            'vacancy_id': vac['id'],
+            'vacancy_name': vac['name'],
+            'vacancy_city': vac['area']['name'],
+            'salary_from': salary_from,
+            'salary_to': salary_to,
+            'vacancy_url': vac['alternate_url'],
+            'employer_id': vac['employer']['id'],
+            'employer_name': vac['employer']['name'],
+            'employer_url': vac['employer']['url']
                    }
         vacancies.append(vacancy)
     return vacancies
@@ -52,11 +58,13 @@ def create_database(database_name: str, params: dict):
             CREATE TABLE IF NOT EXISTS vacancies (
                 vacancy_id int PRIMARY KEY,
                 vacancy_name varchar(200),
-                employer_id int,
+                vacancy_city varchar(100),
                 salary_from int,
                 salary_to int,
-                city varchar(100),
-                url varchar(100)
+                vacancy_url varchar(100),
+                employer_id int,
+                employer_name varchar(100),
+                employer_url varchar(100)
             )
         """)
 
@@ -71,14 +79,16 @@ def save_vacancies_to_db(database_name: str, list_vacancies: list, params: dict)
     with conn:
         with conn.cursor() as cur:
             for vacancy in list_vacancies:
-                cur.execute('INSERT INTO vacancies VALUES (%s, %s, %s, %s, %s, %s, %s, %s)', (
+                cur.execute('INSERT INTO vacancies VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)', (
                     vacancy['vacancy_id'],
                     vacancy['vacancy_name'],
                     vacancy['vacancy_city'],
-                    vacancy['vacancy_url'],
                     vacancy['salary_from'],
                     vacancy['salary_to'],
+                    vacancy['vacancy_url'],
+                    vacancy['employer_id'],
                     vacancy['employer_name'],
-                    vacancy['employer_id']
+                    vacancy['employer_url']
                 ))
-            conn.close()
+    conn.commit()
+    conn.close()

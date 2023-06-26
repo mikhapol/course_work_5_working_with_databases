@@ -9,13 +9,17 @@ CREATE DATABASE head_hunter_bd
 CREATE TABLE IF NOT EXISTS vacancies
 (
 vacancy_id int PRIMARY KEY,
-vacancy_name varchar(100),
-employer_id int,
+vacancy_name varchar(200),
+vacancy_city varchar(100),
 salary_from int,
 salary_to int,
-city varchar(100),
-url varchar(100)
+vacancy_url varchar(100),
+employer_id int,
+employer_name varchar(100),
+employer_url varchar(100)
 );
+
+
 
 
 

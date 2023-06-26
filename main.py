@@ -1,16 +1,23 @@
 from src.DBManager import DBManager
 from src.config import config
-from src.functions import get_request, save_vacancies_to_db, parsing_vacancies
+from src.functions import get_request, save_vacancies_to_db, parsing_vacancies, create_database
 
 
 def main():
-    # Получение вакансий
-    hh_vacancies = parsing_vacancies(get_request('Python'))
-
+    keyword = 'Python'
+    database_name = 'hh_bd'
     params = config()
-    save_vacancies_to_db('hh_bd', hh_vacancies, params)
 
-    dbanager = DBManager('hh_bd', params)
+    # Получение вакансий по keyword.
+    hh_vacancies = parsing_vacancies(get_request(keyword))
+
+    # Создание БД database_name с таблицей и колонами.
+    create_database(database_name, params)
+
+    # Сохранение полученных вакансий в БД.
+    save_vacancies_to_db(database_name, hh_vacancies, params)
+
+    dbmanager = DBManager(database_name, params)
 
     print('Привет, что будем выводить?')
     print("""
@@ -24,26 +31,26 @@ def main():
         user_answer = input('Введи число: ')
 
         if user_answer == '1':
-            emp_info = dbanager.get_companies_and_vacancies_count()
+            emp_info = dbmanager.get_companies_and_vacancies_count()
             for i in emp_info:
                 print(i)
 
         elif user_answer == '2':
-            all_vac = dbanager.get_all_vacancies()
+            all_vac = dbmanager.get_all_vacancies()
             for i in all_vac:
                 print(i)
 
         elif user_answer == '3':
-            print(f"Средняя ЗП: {dbanager.get_avg_salary()}")
+            print(f"Средняя ЗП: {dbmanager.get_avg_salary()}")
 
         elif user_answer == '4':
-            vac = dbanager.get_vacancies_with_higher_salary()
+            vac = dbmanager.get_vacancies_with_higher_salary()
             for item in vac:
                 print(item)
 
         elif user_answer == '5':
             keyword = input('Введите ключевое слово: ')
-            vac = dbanager.get_vacancies_with_keyword(keyword)
+            vac = dbmanager.get_vacancies_with_keyword(keyword)
             for item in vac:
                 print(item)
         else:
