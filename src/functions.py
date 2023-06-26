@@ -1,13 +1,17 @@
+from typing import Any
+
 import psycopg2
 import requests
 
 
-def get_request(keyword, page=0):
-    response = requests.get("https://api.hh.ru/vacancies", params={"text": keyword, "page": page, "per_page": 10})
+def get_request(keyword, page=0, per_page=20) -> list:
+    """Выполняет запрос по заданным параметрам."""
+    response = requests.get("https://api.hh.ru/vacancies", params={"text": keyword, "page": page, "per_page": per_page})
     return response.json()['items']
 
 
-def get_salary(vac):
+def get_salary(vac: Any) -> list:
+    """Если отсутствует ЗП, присваиваем 0."""
     salary = [0, 0]
     if vac['salary'] and vac['salary']['from']:
         salary[0] = vac['salary']['from']
@@ -17,12 +21,10 @@ def get_salary(vac):
     return salary
 
 
-def parsing_vacancies(api_response):
+def parsing_vacancies(api_response: dict) -> list:
+    """Парсим входной словарь."""
     vacancies = []
     for vac in api_response:
-        # print('~~~~~~~~')
-        # print(vac)
-        # print('~~~~~~~~')
         salary_from, salary_to = get_salary(vac)
         vacancy = {
             'vacancy_id': vac['id'],
@@ -39,7 +41,7 @@ def parsing_vacancies(api_response):
     return vacancies
 
 
-def create_database(database_name: str, params: dict):
+def create_database(database_name: str, params: dict) -> None:
     """Создание базы данных и таблиц для сохранения данных."""
 
     conn = psycopg2.connect(database='postgres', **params)

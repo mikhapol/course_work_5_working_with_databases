@@ -4,12 +4,14 @@ from src.functions import get_request, save_vacancies_to_db, parsing_vacancies, 
 
 
 def main():
-    keyword = 'Python'
-    database_name = 'hh_bd'
-    params = config()
+    keyword = 'Python'          # Ключевое слово поиска на hh.ru
+    page = 0                    # Индекс страницы, начинается с 0. Значение по умолчанию 0, т.е. первая страница
+    per_page = 22               # Кол-во вакансий на 1 странице (max 22)
+    database_name = 'hh_bd'     # Название БД
+    params = config()           # Параметры получающие данные через конфиг из файла database.ini
 
     # Получение вакансий по keyword.
-    hh_vacancies = parsing_vacancies(get_request(keyword))
+    hh_vacancies = parsing_vacancies(get_request(keyword, page, per_page))
 
     # Создание БД database_name с таблицей и колонами.
     create_database(database_name, params)
@@ -17,6 +19,7 @@ def main():
     # Сохранение полученных вакансий в БД.
     save_vacancies_to_db(database_name, hh_vacancies, params)
 
+    # Экземпляр класса DBManager для работы с данными в БД.
     dbmanager = DBManager(database_name, params)
 
     print('Приветствую, выберите действие.')
