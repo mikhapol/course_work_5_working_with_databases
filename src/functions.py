@@ -4,7 +4,7 @@ import psycopg2
 import requests
 
 
-def get_request(keyword, page=0, per_page=20) -> list:
+def get_request(keyword, page=0, per_page=20) -> dict:
     """Выполняет запрос по заданным параметрам."""
     response = requests.get("https://api.hh.ru/vacancies", params={"text": keyword, "page": page, "per_page": per_page})
     return response.json()['items']

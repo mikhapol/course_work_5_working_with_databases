@@ -1,6 +1,18 @@
-from src.DBManager import DBManager
+import os
+from dotenv import load_dotenv
+
 from src.config import config
+from src.DBManager import DBManager
 from src.functions import get_request, save_vacancies_to_db, parsing_vacancies, create_database
+
+load_dotenv()
+
+db_config = {
+    'host': os.getenv('POSTGRES_HOST'),
+    'user': os.getenv('POSTGRES_USER'),
+    'password': os.getenv('POSTGRES_PASSWORD'),
+    'port': os.getenv('POSTGRES_PORT')
+}
 
 
 def main():
@@ -8,7 +20,8 @@ def main():
     page = 0                    # Индекс страницы, начинается с 0. Значение по умолчанию 0, т.е. первая страница
     per_page = 22               # Кол-во вакансий на 1 странице (max 22)
     database_name = 'hh_bd'     # Название БД
-    params = config()           # Параметры получающие данные через конфиг из файла database.ini
+    # params = config()           # Параметры получающие данные через конфиг из файла database.ini
+    params = db_config          # Параметры получающие данные через конфиг из файла .env
 
     # Получение вакансий по keyword.
     hh_vacancies = parsing_vacancies(get_request(keyword, page, per_page))
