@@ -98,7 +98,7 @@ class DBManager:
                     f"""
                     SELECT vacancy_name, (salary_from + salary_to) / 2 AS salary, vacancy_url  
                     FROM vacancies
-                    WHERE vacancy_name LIKE '%{keyword}%'
+                    WHERE vacancy_name ILIKE '%keyword%'
                     """
                 )
                 result = cur.fetchall()
